@@ -32,6 +32,30 @@
         echo '<link rel="stylesheet" href="' . $css[$i] . '">';
     }
     ?>
+    <style>
+        .ck-editor__editable_inline {
+            min-height: 100px;
+        }
+
+        .gap-1 {
+            gap: 1rem;
+        }
+
+        .page-item:first-child .page-link {
+            margin-left: 0;
+            border-top-left-radius: none;
+            border-bottom-left-radius: none;
+        }
+
+        .page-item:last-child .page-link {
+            border-top-right-radius: none;
+            border-bottom-right-radius: none;
+        }
+
+        .page-item .page-link {
+            border-radius: 5px;
+        }
+    </style>
 </head>
 
 <body>
@@ -42,11 +66,15 @@
             <div class="row border-bottom">
                 <?php $this->load->view($navbar); ?>
             </div>
-            <?php $this->load->view($content); ?>
+            <?php $this->load->view("parts/admin/breadcrumb"); ?>
+            <div class="wrapper wrapper-content animated fadeInRight">
+                <?php $this->load->view($content); ?>
+            </div>
         </div>
-            <?php $this->load->view($footer); ?>
-        </div>
-        
+        <?php //$this->load->view($footer); 
+        ?>
+    </div>
+
     </div>
 
     <!-- Mainly scripts -->
@@ -88,6 +116,24 @@
 
     <!-- Toastr -->
     <script src="<?= base_url('assets/js/plugins/toastr/toastr.min.js') ?>"></script>
+
+    <!-- custom js  -->
+    <script src="<?= base_url('assets/js/custom.js') ?>"></script>
+
+    <!-- CKEDITOR 5 -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/31.1.0/classic/ckeditor.js"></script>
+
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#editor'))
+            .then(editor => {
+                console.log(editor);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
+
     <?php
     for ($i = 0; $i < count($javascript); $i++) {
         echo '<script src="' . $javascript[$i] . '"></script>';
@@ -109,56 +155,85 @@
 
 
             var data1 = [
-                [0,4],[1,8],[2,5],[3,10],[4,4],[5,16],[6,5],[7,11],[8,6],[9,11],[10,30],[11,10],[12,13],[13,4],[14,3],[15,3],[16,6]
+                [0, 4],
+                [1, 8],
+                [2, 5],
+                [3, 10],
+                [4, 4],
+                [5, 16],
+                [6, 5],
+                [7, 11],
+                [8, 6],
+                [9, 11],
+                [10, 30],
+                [11, 10],
+                [12, 13],
+                [13, 4],
+                [14, 3],
+                [15, 3],
+                [16, 6]
             ];
             var data2 = [
-                [0,1],[1,0],[2,2],[3,0],[4,1],[5,3],[6,1],[7,5],[8,2],[9,3],[10,2],[11,1],[12,0],[13,2],[14,8],[15,0],[16,0]
+                [0, 1],
+                [1, 0],
+                [2, 2],
+                [3, 0],
+                [4, 1],
+                [5, 3],
+                [6, 1],
+                [7, 5],
+                [8, 2],
+                [9, 3],
+                [10, 2],
+                [11, 1],
+                [12, 0],
+                [13, 2],
+                [14, 8],
+                [15, 0],
+                [16, 0]
             ];
             $("#flot-dashboard-chart").length && $.plot($("#flot-dashboard-chart"), [
                 data1, data2
-            ],
-                    {
-                        series: {
-                            lines: {
-                                show: false,
-                                fill: true
-                            },
-                            splines: {
-                                show: true,
-                                tension: 0.4,
-                                lineWidth: 1,
-                                fill: 0.4
-                            },
-                            points: {
-                                radius: 0,
-                                show: true
-                            },
-                            shadowSize: 2
-                        },
-                        grid: {
-                            hoverable: true,
-                            clickable: true,
-                            tickColor: "#d5d5d5",
-                            borderWidth: 1,
-                            color: '#d5d5d5'
-                        },
-                        colors: ["#1ab394", "#1C84C6"],
-                        xaxis:{
-                        },
-                        yaxis: {
-                            ticks: 4
-                        },
-                        tooltip: false
-                    }
-            );
+            ], {
+                series: {
+                    lines: {
+                        show: false,
+                        fill: true
+                    },
+                    splines: {
+                        show: true,
+                        tension: 0.4,
+                        lineWidth: 1,
+                        fill: 0.4
+                    },
+                    points: {
+                        radius: 0,
+                        show: true
+                    },
+                    shadowSize: 2
+                },
+                grid: {
+                    hoverable: true,
+                    clickable: true,
+                    tickColor: "#d5d5d5",
+                    borderWidth: 1,
+                    color: '#d5d5d5'
+                },
+                colors: ["#1ab394", "#1C84C6"],
+                xaxis: {},
+                yaxis: {
+                    ticks: 4
+                },
+                tooltip: false
+            });
 
             var doughnutData = {
-                labels: ["App","Software","Laptop" ],
+                labels: ["App", "Software", "Laptop"],
                 datasets: [{
-                    data: [300,50,100],
-                    backgroundColor: ["#a3e1d4","#dedede","#9CC3DA"]
+                    data: [300, 50, 100],
+                    backgroundColor: ["#a3e1d4", "#dedede", "#9CC3DA"]
                 }]
-            } ;
+            };
 
 
             var doughnutOptions = {
@@ -170,15 +245,19 @@
 
 
             var ctx4 = document.getElementById("doughnutChart").getContext("2d");
-            new Chart(ctx4, {type: 'doughnut', data: doughnutData, options:doughnutOptions});
+            new Chart(ctx4, {
+                type: 'doughnut',
+                data: doughnutData,
+                options: doughnutOptions
+            });
 
             var doughnutData = {
-                labels: ["App","Software","Laptop" ],
+                labels: ["App", "Software", "Laptop"],
                 datasets: [{
-                    data: [70,27,85],
-                    backgroundColor: ["#a3e1d4","#dedede","#9CC3DA"]
+                    data: [70, 27, 85],
+                    backgroundColor: ["#a3e1d4", "#dedede", "#9CC3DA"]
                 }]
-            } ;
+            };
 
 
             var doughnutOptions = {
@@ -190,9 +269,14 @@
 
 
             var ctx4 = document.getElementById("doughnutChart2").getContext("2d");
-            new Chart(ctx4, {type: 'doughnut', data: doughnutData, options:doughnutOptions});
+            new Chart(ctx4, {
+                type: 'doughnut',
+                data: doughnutData,
+                options: doughnutOptions
+            });
 
         });
     </script>
 </body>
+
 </html>
